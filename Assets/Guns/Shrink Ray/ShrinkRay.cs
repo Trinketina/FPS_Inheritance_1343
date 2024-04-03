@@ -6,6 +6,10 @@ public class ShrinkRay : Gun
 {
     bool shrink = true;
     float swapTime = 0;
+    float tParticles = 0;
+    [SerializeField]
+    ParticleSystem rayParticles;
+
     [SerializeField]
     MeshRenderer blaster;
 
@@ -13,17 +17,36 @@ public class ShrinkRay : Gun
     Material shrinkMat;
     [SerializeField]
     Material growMat;
+
     public override bool AttemptFire()
     {
         if (!base.AttemptFire() || elapsed < swapTime)
             return false;
 
         var b = Instantiate(bulletPrefab, gunBarrelEnd.transform.position, gunBarrelEnd.rotation);
-        if (shrink)
-            b.GetComponent<Projectile>().Initialize(0, 100, 2, 0, Shrink); // version with special effect
-        else
-            b.GetComponent<Projectile>().Initialize(0, 100, 2, 0, Grow);
+        var main = rayParticles.main;
 
+        if (shrink)
+        {
+            b.GetComponent<Projectile>().Initialize(0, 100, 2, 0, Shrink);
+            main.startColor = Color.blue;
+        }
+        else
+        {
+            b.GetComponent<Projectile>().Initialize(0, 100, 2, 0, Grow);
+            main.startColor = Color.red;
+        }
+
+        
+        if (tParticles > .2f) 
+        {
+            //not the best way to implement this, but trying my best to work within the constraints set
+            //i could have tested for when the KeyUp, to turn off a Looping animation, or something like that, but it would've required adding more listening code that should stay in the FPSController
+            rayParticles.Emit(1);
+            rayParticles.Play();
+            tParticles = 0;
+        }
+        tParticles += elapsed;
         anim.SetTrigger("shoot");
         swapTime = 0;
         elapsed = 0;
@@ -34,13 +57,14 @@ public class ShrinkRay : Gun
 
     public override bool AttemptAltFire()
     {
-        if (!base.AttemptFire() || elapsed < swapTime)
+        if (elapsed < swapTime)
             return false;
 
-        swapTime = .5f;
-        shrink = !shrink;
+        anim.SetTrigger("swap");
 
-        blaster.materials[2].color = shrink? shrinkMat.color : growMat.color;
+        swapTime = .5f;
+        elapsed = 0;
+        shrink = !shrink;
 
         return true;
     }
@@ -63,5 +87,11 @@ public class ShrinkRay : Gun
         {
             data.target.gameObject.GetComponentInParent<Rigidbody>().transform.localScale *= 1.01f;
         }
+    }
+
+
+    public void SwapColor()
+    {
+        blaster.materials[2].color = shrink ? shrinkMat.color : growMat.color;
     }
 }
