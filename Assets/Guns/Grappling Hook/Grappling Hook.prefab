@@ -102,7 +102,7 @@ MonoBehaviour:
   bulletPrefab: {fileID: 487163690456666478, guid: 93557f301660ada4482b82ca8eaa58ce, type: 3}
   anim: {fileID: 5341179008080879068}
   maxAmmo: 10
-  timeBetweenShots: 3
+  timeBetweenShots: 1
   isAutomatic: 0
   lineRenderer: {fileID: 1163196606305977095, guid: e03bf99d391ddee4189b2a8e67e46c88, type: 3}
 --- !u!1001 &2087909547014944926
