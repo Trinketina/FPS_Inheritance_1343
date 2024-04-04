@@ -5,7 +5,9 @@ using UnityEngine;
 
 public class GrapplingHook : Gun
 {
-
+    [SerializeField]
+    LineRenderer lineRenderer;
+    LineRenderer line;
     bool reeledIn = true;
     
 
@@ -24,6 +26,13 @@ public class GrapplingHook : Gun
 
         return true;
     }
+    public override void Unequip()
+    {
+        base.Unequip();
+        StopAllCoroutines();
+        Destroy(line);
+        reeledIn = true;
+    }
 
     void GrappleShot(HitData data)
     {
@@ -36,14 +45,23 @@ public class GrapplingHook : Gun
     {
         float reelTime = 0;
         reeledIn = false;
+        line = Instantiate(lineRenderer, gunBarrelEnd.transform);
+
         while (reelTime < .48f)
         {
             player.transform.position = Vector3.Lerp(origin, newPos, reelTime*2);
+
+            Vector3[] positions = {
+                gunBarrelEnd.transform.position,
+                newPos
+            };
+            line.SetPositions(positions);
 
             reelTime += Time.deltaTime;
             yield return null;
         }
 
+        Destroy(line);
         reeledIn = true;
     }
 }

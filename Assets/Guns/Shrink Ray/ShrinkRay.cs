@@ -73,7 +73,7 @@ public class ShrinkRay : Gun
     {
         Vector3 impactLocation = data.location;
 
-        if (data.target.gameObject.layer == 7)
+        if (data.target.gameObject.GetComponentInParent<Rigidbody>() != null)
         {
             data.target.gameObject.GetComponentInParent<Rigidbody>().transform.localScale *= .99f;
         }
@@ -83,7 +83,7 @@ public class ShrinkRay : Gun
     {
         Vector3 impactLocation = data.location;
 
-        if (data.target.gameObject.layer == 7)
+        if (data.target.gameObject.GetComponentInParent<Rigidbody>()!= null)
         {
             data.target.gameObject.GetComponentInParent<Rigidbody>().transform.localScale *= 1.01f;
         }

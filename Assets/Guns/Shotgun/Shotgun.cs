@@ -11,6 +11,9 @@ public class Shotgun : Gun
     [SerializeField]
     float recoilAmt;
 
+    [SerializeField]
+    GameObject blood;
+
     public override bool AttemptFire()
     {
         if (!base.AttemptFire())
@@ -51,7 +54,7 @@ public class Shotgun : Gun
         rotation.y += Random.Range(-.2f, .2f);
 
         var b6 = Instantiate(bulletPrefab, gunBarrelEnd.transform.position, rotation);
-        b6.GetComponent<Projectile>().Initialize(2, 100, .15f, 2, OnHit);
+        b6.GetComponent<Projectile>().Initialize(2, 100, .15f, 2, null);
 
         //recoil
         CharacterController player = this.GetComponentInParent<CharacterController>();
@@ -64,11 +67,16 @@ public class Shotgun : Gun
 
         return true;
     }
+    public override void Unequip()
+    {
+        base.Unequip();
+        StopAllCoroutines();
+    }
 
     void OnHit(HitData data)
     {
-        
-
+        var hit = Instantiate(blood, data.location, Quaternion.LookRotation(data.direction));
+        Destroy(hit.gameObject, .5f);
     }
 
     IEnumerator RecoilCoroutine(CharacterController player)
