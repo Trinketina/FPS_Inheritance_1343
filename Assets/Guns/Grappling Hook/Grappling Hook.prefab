@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gunBarrelEnd: {fileID: 3858700899792071602}
-  bulletPrefab: {fileID: 0}
+  bulletPrefab: {fileID: 487163690456666478, guid: 93557f301660ada4482b82ca8eaa58ce, type: 3}
   anim: {fileID: 5341179008080879068}
   maxAmmo: 10
   timeBetweenShots: 3

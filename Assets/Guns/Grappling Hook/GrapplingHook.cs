@@ -5,8 +5,9 @@ using UnityEngine;
 
 public class GrapplingHook : Gun
 {
+
     bool reeledIn = true;
-    float reelTime = 0;
+    
 
     public override bool AttemptFire()
     {
@@ -33,15 +34,16 @@ public class GrapplingHook : Gun
 
     IEnumerator GrappleCoroutine(CharacterController player, Vector3 origin, Vector3 newPos)
     {
+        float reelTime = 0;
         reeledIn = false;
         while (reelTime < .48f)
         {
             player.transform.position = Vector3.Lerp(origin, newPos, reelTime*2);
+
             reelTime += Time.deltaTime;
             yield return null;
         }
 
-        reelTime = 0;
         reeledIn = true;
     }
 }
