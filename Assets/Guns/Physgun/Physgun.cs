@@ -106,10 +106,13 @@ public class Physgun : Gun
         {
             Vector3 currPos = heldObject.transform.position;
             Vector3 target = locationTarget.transform.position;
-            float strength = Vector3.Distance(currPos, target)*25f;
+            float strength = Vector3.Distance(currPos, target)*5f;
             Debug.Log(strength);
 
-            heldObject.position = Vector3.MoveTowards(currPos, target, strength*Time.deltaTime);
+            //heldObject.position = Vector3.MoveTowards(currPos, target, strength*Time.deltaTime);
+            Vector3 dir = target - currPos;
+            dir.Normalize();
+            heldObject.velocity = strength * dir;
 
             Vector3[] positions = {
                 gunBarrelEnd.transform.position,
