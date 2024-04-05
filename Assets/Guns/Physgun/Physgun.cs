@@ -27,8 +27,6 @@ public class Physgun : Gun
 
             holdingSomething = false;
             Destroy(line.gameObject);
-            //only want elapsed to restart when releasing, that way you can pick up and release quickly
-            elapsed = 0;
         }
         else
         {
@@ -37,6 +35,7 @@ public class Physgun : Gun
 
         }
 
+        elapsed = 0;
         anim.SetTrigger("shoot");
         ammo -= 1;
 
@@ -81,7 +80,8 @@ public class Physgun : Gun
 
     void OnHit(HitData data)
     {
-       if (data.target.GetComponentInParent<Rigidbody>() != null)
+        elapsed += timeBetweenShots;
+        if (data.target.GetComponentInParent<Rigidbody>() != null)
         {
             Debug.Log("hit smth");
             holdingSomething = true;
