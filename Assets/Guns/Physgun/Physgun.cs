@@ -66,7 +66,7 @@ public class Physgun : Gun
         if (holdingSomething)
         {
             StopAllCoroutines();
-            Destroy(line);
+            Destroy(line.gameObject);
             //stop holding
 
             heldObject.useGravity = true;
