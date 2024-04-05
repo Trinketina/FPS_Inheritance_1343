@@ -47,6 +47,7 @@ public class ShrinkRay : Gun
             tParticles = 0;
         }
         tParticles += elapsed;
+        anim.speed = .5f;
         anim.SetTrigger("shoot");
         swapTime = 0;
         elapsed = 0;
@@ -60,6 +61,7 @@ public class ShrinkRay : Gun
         if (elapsed < swapTime)
             return false;
 
+        anim.speed = 1f;
         anim.SetTrigger("swap");
 
         swapTime = .5f;

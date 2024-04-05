@@ -29,9 +29,12 @@ public class GrapplingHook : Gun
     public override void Unequip()
     {
         base.Unequip();
-        StopAllCoroutines();
-        Destroy(line);
-        reeledIn = true;
+        if (!reeledIn)
+        {
+            StopAllCoroutines();
+            Destroy(line.gameObject);
+            reeledIn = true;
+        }
     }
 
     void GrappleShot(HitData data)
@@ -61,7 +64,7 @@ public class GrapplingHook : Gun
             yield return null;
         }
 
-        Destroy(line);
+        Destroy(line.gameObject);
         reeledIn = true;
     }
 }
