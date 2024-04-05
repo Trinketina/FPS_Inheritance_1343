@@ -11,6 +11,7 @@ public class Physgun : Gun
 
     bool holdingSomething = false;
     Rigidbody heldObject;
+    [SerializeField]
     GameObject locationTarget;
 
     public override bool AttemptFire()
@@ -25,6 +26,7 @@ public class Physgun : Gun
             heldObject.constraints = RigidbodyConstraints.FreezeRotation;
 
             holdingSomething = false;
+            Destroy(line.gameObject);
             //only want elapsed to restart when releasing, that way you can pick up and release quickly
             elapsed = 0;
         }
@@ -47,8 +49,9 @@ public class Physgun : Gun
 
         //stop holding without reenabling gravity
 
-        heldObject.constraints = RigidbodyConstraints.FreezePosition;
+        heldObject.constraints = RigidbodyConstraints.FreezeAll;
         holdingSomething = false;
+        Destroy(line.gameObject);
 
         elapsed = 0;
         anim.SetTrigger("shoot");
@@ -63,7 +66,6 @@ public class Physgun : Gun
         if (holdingSomething)
         {
             StopAllCoroutines();
-            Destroy(locationTarget);
             Destroy(line);
             //stop holding
 
@@ -87,20 +89,19 @@ public class Physgun : Gun
             //location for the locationTarget
             Vector3 loc = gunBarrelEnd.transform.position + gunBarrelEnd.transform.forward * Vector3.Distance(gunBarrelEnd.transform.position, data.location);
             //where the heldObject should be trying to get to in the coroutine
-            locationTarget = Instantiate(new GameObject(), loc, gunBarrelEnd.transform.rotation, gunBarrelEnd.transform);
+            locationTarget.transform.position = loc;
 
             heldObject = data.target.gameObject.GetComponentInParent<Rigidbody>();
             heldObject.constraints = RigidbodyConstraints.FreezeRotation;
             heldObject.useGravity = false;
 
+            line = Instantiate(lineRenderer, gunBarrelEnd.transform);
             StartCoroutine(MoveObjectCoroutine());
         }
     }
 
     IEnumerator MoveObjectCoroutine()
     {
-        line = Instantiate(lineRenderer, gunBarrelEnd.transform);
-        
         while (holdingSomething)
         {
             Vector3 currPos = heldObject.transform.position;
@@ -117,8 +118,5 @@ public class Physgun : Gun
             line.SetPositions(positions);
             yield return null;
         }
-
-        Destroy(locationTarget);
-        Destroy(line);
     }
 }
