@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Damager : MonoBehaviour
 {
+    [SerializeField] UnityEvent OnHit;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -15,5 +18,9 @@ public class Damager : MonoBehaviour
     {
         
     }
-    
+
+    private void OnTriggerEnter(Collider other)
+    {
+        OnHit.Invoke();
+    }
 }

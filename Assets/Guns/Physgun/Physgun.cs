@@ -31,7 +31,7 @@ public class Physgun : Gun
         else
         {
             var b = Instantiate(bulletPrefab, gunBarrelEnd.transform.position, gunBarrelEnd.rotation);
-            b.GetComponent<Projectile>().Initialize(1, 90, 2f, 1, OnHit);
+            b.GetComponent<Projectile>().Initialize(1, 90, .5f, 1, OnHit);
 
         }
 
@@ -83,7 +83,7 @@ public class Physgun : Gun
         elapsed += timeBetweenShots;
         if (data.target.GetComponentInParent<Rigidbody>() != null)
         {
-            Debug.Log("hit smth");
+            //Debug.Log("hit smth");
             holdingSomething = true;
 
             //location for the locationTarget
@@ -107,7 +107,10 @@ public class Physgun : Gun
             Vector3 currPos = heldObject.transform.position;
             Vector3 target = locationTarget.transform.position;
             float strength = Vector3.Distance(currPos, target)*5f;
-            Debug.Log(strength);
+            //Debug.Log(strength);
+            var AIScript = heldObject.GetComponent<Enemy>();
+            if (AIScript != null)
+                AIScript.ResetTime();
 
             //heldObject.position = Vector3.MoveTowards(currPos, target, strength*Time.deltaTime);
             Vector3 dir = target - currPos;

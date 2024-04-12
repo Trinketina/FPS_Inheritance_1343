@@ -76,7 +76,7 @@ public class Shotgun : Gun
     void OnHit(HitData data)
     {
         var hit = Instantiate(blood, data.location, Quaternion.LookRotation(data.direction));
-        Destroy(hit.gameObject, .5f);
+        Destroy(hit.gameObject, .5f);        
     }
 
     IEnumerator RecoilCoroutine(CharacterController player)
