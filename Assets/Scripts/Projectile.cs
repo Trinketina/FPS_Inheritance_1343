@@ -44,7 +44,7 @@ public class Projectile : MonoBehaviour
             var direction = GetComponent<Rigidbody>().velocity;
             direction.Normalize();
 
-            Debug.Log("hit enemy trigger");
+            //Debug.Log("hit enemy trigger");
             target.Hit(direction * knockback, damageAmount);
 
             HitData hd = new HitData();
