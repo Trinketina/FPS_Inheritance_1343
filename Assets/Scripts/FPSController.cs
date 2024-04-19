@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class FPSController : MonoBehaviour
 {
@@ -20,6 +21,10 @@ public class FPSController : MonoBehaviour
     // private variables
     Vector3 origin;
     Vector3 velocity;
+    Vector3 moveAxis;
+    Vector3 lookAxis;
+    bool firing = false;
+    bool sprinting;
     bool grounded;
     float xRotation;
     List<Gun> equippedGuns = new List<Gun>();
@@ -51,7 +56,7 @@ public class FPSController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Movement();
+        Move();
         Look();
         HandleSwitchGun();
         FireGun();
@@ -62,7 +67,7 @@ public class FPSController : MonoBehaviour
         velocity = Vector3.Lerp(velocity, noVelocity, 5 * Time.deltaTime);
     }
 
-    void Movement()
+    void Move()
     {
         grounded = controller.isGrounded;
 
@@ -71,14 +76,8 @@ public class FPSController : MonoBehaviour
             velocity.y = -1;// -0.5f;
         }
 
-        Vector2 movement = GetPlayerMovementVector();
-        Vector3 move = transform.right * movement.x + transform.forward * movement.y;
-        controller.Move(move * movementSpeed * (GetSprint() ? 2 : 1) * Time.deltaTime);
-
-        if (Input.GetButtonDown("Jump") && grounded)
-        {
-            velocity.y += Mathf.Sqrt (jumpForce * -1 * gravity);
-        }
+        Vector3 move = transform.right * moveAxis.x + transform.forward * moveAxis.y; 
+        controller.Move(move * movementSpeed * (sprinting ? 2 : 1) * Time.deltaTime);
 
         velocity.y += gravity * Time.deltaTime;
 
@@ -87,9 +86,8 @@ public class FPSController : MonoBehaviour
 
     void Look()
     {
-        Vector2 looking = GetPlayerLook();
-        float lookX = looking.x * lookSensitivityX * Time.deltaTime;
-        float lookY = looking.y * lookSensitivityY * Time.deltaTime;
+        float lookX = lookAxis.x * lookSensitivityX * Time.deltaTime;
+        float lookY = lookAxis.y * lookSensitivityY * Time.deltaTime;
 
         xRotation -= lookY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
@@ -129,24 +127,17 @@ public class FPSController : MonoBehaviour
         if (currentGun == null)
             return;
 
-        // pressed the fire button
-        if(GetPressFire())
+        // holding the fire button
+        if(firing && currentGun.AttemptAutomaticFire())
         {
             currentGun?.AttemptFire();
         }
 
-        // holding the fire button (for automatic)
-        else if(GetHoldFire())
-        {
-            if (currentGun.AttemptAutomaticFire())
-                currentGun?.AttemptFire();
-        }
-
         // pressed the alt fire button
-        if (GetPressAltFire())
+        /*if (GetPressAltFire())
         {
             currentGun?.AttemptAltFire();
-        }
+        }*/
     }
 
     void EquipGun(Gun g)
@@ -189,35 +180,47 @@ public class FPSController : MonoBehaviour
     }
 
     // Input methods
-
-    bool GetPressFire()
+    public void OnJump()
     {
-        return Input.GetButtonDown("Fire1");
+        if (grounded)
+        {
+            velocity.y += Mathf.Sqrt(jumpForce * -1 * gravity);
+        }
     }
 
-    bool GetHoldFire()
+    public void OnFire(InputAction.CallbackContext ctx)
     {
-        return Input.GetButton("Fire1");
+        if (ctx.started) //called when first pressed down
+        {
+            currentGun?.AttemptFire();
+            firing = true;
+        }
+        else if (ctx.canceled) //called again when released
+            firing = false;
     }
 
-    bool GetPressAltFire()
+    public void OnAltFire()
     {
-        return Input.GetButtonDown("Fire2");
+        currentGun?.AttemptAltFire();
     }
 
-    Vector2 GetPlayerMovementVector()
+    public void OnMovement(InputAction.CallbackContext ctx)
     {
-        return new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        moveAxis = ctx.ReadValue<Vector2>();
     }
 
-    Vector2 GetPlayerLook()
+    public void OnLook(InputAction.CallbackContext ctx)
     {
-        return new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+        lookAxis = ctx.ReadValue<Vector2>();
     }
 
-    bool GetSprint()
+    public void OnSprint(InputAction.CallbackContext ctx)
     {
-        return Input.GetButton("Sprint");
+        if (ctx.performed) //called when first pressed down
+            sprinting = true;
+        else if (ctx.canceled) //called again when released
+            sprinting = false;
+
     }
 
     // Collision methods
