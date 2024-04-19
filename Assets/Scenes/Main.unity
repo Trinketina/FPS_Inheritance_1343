@@ -186,6 +186,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 2071811436}
+        m_TargetAssemblyTypeName: FPSController, Assembly-CSharp
+        m_MethodName: TakeDamage
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 1.3
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &135464748
 GameObject:
   m_ObjectHideFlags: 0
@@ -2828,6 +2840,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d2e13f507f4b9d4aab1c4c5256cd343, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerInput: {fileID: 358719882}
 --- !u!4 &1277026086
 Transform:
   m_ObjectHideFlags: 0
@@ -6193,7 +6206,6 @@ GameObject:
   - component: {fileID: 2071811431}
   - component: {fileID: 2071811436}
   - component: {fileID: 2071811437}
-  - component: {fileID: 2071811438}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -6336,6 +6348,22 @@ MonoBehaviour:
   lookSensitivityY: 500
   gravity: -20
   jumpForce: 5
+  maxHealth: 20
+  HealthChange:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1681447824}
+        m_TargetAssemblyTypeName: PlayerHUD, Assembly-CSharp
+        m_MethodName: SetHealth
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2071811437
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6357,35 +6385,6 @@ MonoBehaviour:
   barrelEnd: {fileID: 11768569}
   colorValidTarget: {r: 0.8980393, g: 0.20000002, b: 0.20000002, a: 1}
   colorNoValidTarget: {r: 0.9056604, g: 0.9056604, b: 0.9056604, a: 1}
---- !u!114 &2071811438
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2071811430}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e531237b1eeb184e9d1f433381e6a13, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHp: 100
-  OnHit:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1439652804}
-        m_TargetAssemblyTypeName: RedFlash, Assembly-CSharp
-        m_MethodName: Flash
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  damageNumberPrefab: {fileID: 0}
 --- !u!1001 &8589142362046080
 PrefabInstance:
   m_ObjectHideFlags: 0

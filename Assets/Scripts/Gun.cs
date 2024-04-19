@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 // gun base class
 public class Gun : MonoBehaviour
@@ -19,12 +20,21 @@ public class Gun : MonoBehaviour
 
     // private variables
     protected int ammo;
+    public int Ammo {  
+        get { return ammo; } 
+        set { ammo = (value < 0) ? 0 : value;
+            AmmoChange.Invoke(ammo, maxAmmo); } }
     protected float elapsed = 0;
+
+    UnityAction<int, int> AmmoChange;
 
     // Start is called before the first frame update
     void Start()
     {
+        AmmoChange += FindObjectOfType<PlayerHUD>().SetAmmo;
+
         ammo = maxAmmo;
+        AmmoChange.Invoke(ammo, maxAmmo);
     }
 
     // Update is called once per frame
@@ -36,12 +46,14 @@ public class Gun : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             AddAmmo(999);
+            AmmoChange.Invoke(ammo, maxAmmo);
         }
     }
 
     public virtual void Equip(FPSController p)
     {
         player = p;
+        AmmoChange.Invoke(ammo, maxAmmo);
     }
 
     public virtual void Unequip() { }
@@ -66,6 +78,7 @@ public class Gun : MonoBehaviour
             return false;
         }
 
+        AmmoChange.Invoke(ammo-1, maxAmmo);
         return true;
     }
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 public class FPSController : MonoBehaviour
@@ -17,8 +18,19 @@ public class FPSController : MonoBehaviour
     [SerializeField] float lookSensitivityY = 1.0f;
     [SerializeField] float gravity = -9.81f;
     [SerializeField] float jumpForce = 10;
+    [SerializeField] float maxHealth = 20;
 
     // private variables
+    float health;
+    public float Health
+    {
+        get { return health; }
+        set
+        {
+            health = (value < maxHealth) ? value : maxHealth;
+            HealthChange.Invoke(health, maxHealth);
+        }
+    }
     Vector3 origin;
     Vector3 velocity;
     Vector3 moveAxis;
@@ -33,7 +45,8 @@ public class FPSController : MonoBehaviour
 
     // properties
     public GameObject Cam { get { return cam; } }
-    
+
+    [SerializeField] UnityEvent<float, float> HealthChange;
 
     private void Awake()
     {
@@ -45,6 +58,7 @@ public class FPSController : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
+        Health = maxHealth;
 
         // start with a gun
         if(initialGun != null)
@@ -176,6 +190,7 @@ public class FPSController : MonoBehaviour
 
     public void Respawn()
     {
+        Health = maxHealth;
         transform.position = origin;
     }
 
@@ -223,6 +238,10 @@ public class FPSController : MonoBehaviour
 
     }
 
+    public void TakeDamage(float dmg)
+    {
+        Health -= dmg;
+    }
     // Collision methods
 
     // Character Controller can't use OnCollisionEnter :D thanks Unity
@@ -233,6 +252,7 @@ public class FPSController : MonoBehaviour
             var collisionPoint = hit.collider.ClosestPoint(transform.position);
             var knockbackAngle = (transform.position - collisionPoint).normalized;
             velocity = (20 * knockbackAngle);
+            Health -= 5;
         }
 
         if (hit.gameObject.GetComponent <KillZone>())
