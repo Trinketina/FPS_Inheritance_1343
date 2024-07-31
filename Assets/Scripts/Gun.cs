@@ -79,6 +79,7 @@ public class Gun : MonoBehaviour
         }
 
         AmmoChange.Invoke(ammo-1, maxAmmo);
+        FindObjectOfType<GunAim>().Aim();
         return true;
     }
 
